@@ -1,0 +1,11 @@
+# ===================================
+#  Field Definitions
+# ===================================
+
+fields:
+
+    userid:
+        span: auto
+        label: userid
+        comment: userid
+
