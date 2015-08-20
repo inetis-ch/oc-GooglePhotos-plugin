@@ -1,5 +1,6 @@
 # octobercms-picasa
 Display public picasa albums into october
+<img src="https://monosnap.com/file/kMtub5LQXiXmfs0m9Hf8Km7LTY2UsJ.png">
 
 # how to use it
 * Install the component
