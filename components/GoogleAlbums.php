@@ -1,6 +1,6 @@
-<?php namespace Inetis\Googleimages\Components;
+<?php namespace Inetis\GooglePhotos\Components;
 use Cms\Classes\ComponentBase;
-use Inetis\Googleimages\Models\Settings as PicasaSettings;
+use Inetis\GooglePhotos\Models\Settings as PicasaSettings;
 class GoogleAlbums extends ComponentBase
 {
 

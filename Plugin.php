@@ -1,7 +1,9 @@
-<?php namespace Inetis\Googleimages;
+<?php namespace Inetis\GooglePhotos;
+
 use System\Classes\PluginBase;
+
 /**
- * googleimages Plugin Information File
+ * GooglePhotos Plugin Information File
  */
 class Plugin extends PluginBase
 {
@@ -24,8 +26,8 @@ class Plugin extends PluginBase
     public function registerComponents()
     {
         return [
-            'Inetis\Googleimages\Components\GoogleAlbums' => 'googleAlbums',
-            'Inetis\Googleimages\Components\GoogleAlbum' => 'googleAlbum'
+            'Inetis\GooglePhotos\Components\GoogleAlbums' => 'googleAlbums',
+            'Inetis\GooglePhotos\Components\GoogleAlbum' => 'googleAlbum'
         ];
     }
 
@@ -38,7 +40,7 @@ class Plugin extends PluginBase
                 'category' => 'Picasa',
                 'default' => -1,
                 'icon' => 'icon-cog',
-                'class' => 'Inetis\Googleimages\Models\Settings',
+                'class' => 'Inetis\GooglePhotos\Models\Settings',
                 'order' => 500
             ]
         ];

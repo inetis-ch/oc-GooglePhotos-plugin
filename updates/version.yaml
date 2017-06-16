@@ -1,0 +1,4 @@
+1.0.1: First version of googleimages
+1.1.0:
+    - !!! Rename plugin into GooglePhotos
+    - !!! Add OAuth2 authentication
