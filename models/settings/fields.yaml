@@ -9,3 +9,6 @@ fields:
         label: userid
         comment: userid
 
+    tokenButton:
+        type: partial
+        path: $/inetis/googlephotos/controllers/oauth/_login_button.htm
