@@ -1,7 +1,7 @@
 <?php namespace Inetis\GooglePhotos\Components;
 
 use Cms\Classes\ComponentBase;
-use Inetis\GooglePhotos\Models\Settings as PicasaSettings;
+use Cms\Classes\Page;
 use Inetis\GooglePhotos\PicasaWebData\OctoberCms\ComponentSettingsProvider;
 use Inetis\GooglePhotos\PicasaWebData\PicasaClient;
 
@@ -23,6 +23,11 @@ class GoogleAlbums extends ComponentBase
     public function defineProperties()
     {
         return [
+            'albumPage' => [
+                'title' => 'Album Page',
+                'description' => 'The page that displays the detail of an album',
+                'type' => 'dropdown',
+            ],
             'visibility' => [
                 'title' => 'Visibility',
                 'description' => 'The visibility level of the albums to show',
@@ -51,6 +56,11 @@ class GoogleAlbums extends ComponentBase
                 'options' => [ 'h' => 'Height', 'w' => 'Width', 's' => 'Smallest', 'l' => 'Largest' ]
             ],
         ];
+    }
+
+    public function getAlbumPageOptions()
+    {
+        return Page::withComponent('googleAlbum')->sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
     }
 
     public function onRun()
