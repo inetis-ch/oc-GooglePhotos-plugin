@@ -34,7 +34,7 @@ class OAuthToken
     public function refresh($force = false)
     {
         // Refresh the token only if it is expired or if force is enabled
-        if (!$this->isExpired() && !$force)
+        if (!$force && $this->isExpired())
             return;
 
         $http = Http::make($this->settings->getTokenRenewUrl(), Http::METHOD_POST);
@@ -52,11 +52,5 @@ class OAuthToken
 
         $response = json_decode($http->body, true);
         $this->storedToken->updateToken($response);
-    }
-
-    public static function saveNewToken($token, BaseSettingsProvider $settings)
-    {
-        $storedToken = $settings->setNewStoredToken($token);
-        return new static($settings, $storedToken);
     }
 }

@@ -1,0 +1,17 @@
+<?php
+
+use Inetis\GooglePhotos\PicasaWebData\OctoberCms\SettingsProvider;
+
+$settingsProvider = new SettingsProvider();
+$isAuthenticated  = $settingsProvider->hasValidToken();
+
+?>
+<?php if ($isAuthenticated): ?>
+    <a class="btn btn-default" href="<?= $settingsProvider->buildRevokeUrl() ?>" target="_blank">
+        Sign out
+    </a>
+<?php else: ?>
+    <a class="btn btn-default" href="<?= $settingsProvider->buildAuthUrl(csrf_token()) ?>" target="_blank">
+        Sign in
+    </a>
+<?php endif; ?>

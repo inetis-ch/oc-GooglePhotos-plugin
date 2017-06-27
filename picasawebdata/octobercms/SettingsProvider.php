@@ -1,33 +1,38 @@
-<?php namespace Inetis\GooglePhotos\PicasaWebData\Settings;
+<?php namespace Inetis\GooglePhotos\PicasaWebData\OctoberCms;
 
+use Config;
+use Exception;
 use Inetis\GooglePhotos\PicasaWebData\Base\Settings\BaseSettingsProvider;
-use Inetis\GooglePhotos\PicasaWebData\Base\Settings\PicasaSettingsProviderInterface;
+use Inetis\GooglePhotos\PicasaWebData\Base\Tokens\OAuthToken;
+use Request;
 
-class SettingsProvider extends BaseSettingsProvider implements PicasaSettingsProviderInterface
+class SettingsProvider extends BaseSettingsProvider
 {
+    public function __construct()
+    {
+        $this->tokenRedirectUrl = Request::root() . '/' . Config::get('cms.backendUri');
+        $this->tokenRedirectUrl .= '/inetis/googlephotos/oauth/callback';
+    }
+
+    public function hasValidToken()
+    {
+        try {
+            $oAuthToken = new OAuthToken($this);
+            $oAuthToken->refresh(true);
+            return true;
+        }
+        catch (Exception $e) {
+            return false;
+        }
+    }
 
     public function getStoredToken()
     {
-        // TODO: Implement getStoredToken() method.
+        return new SettingsStoredToken();
     }
 
-    public function setNewStoredToken($newToken, $state)
+    public function setNewStoredToken($newToken, $state = null)
     {
-        // TODO: Implement setNewStoredToken() method.
-    }
-
-    public function getVisibility()
-    {
-        // TODO: Implement getVisibility() method.
-    }
-
-    public function getAlbumThumbSize()
-    {
-        // TODO: Implement getAlbumThumbSize() method.
-    }
-
-    public function getImageMaxSize()
-    {
-        // TODO: Implement getImageMaxSize() method.
+        return SettingsStoredToken::create($newToken);
     }
 }

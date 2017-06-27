@@ -4,11 +4,7 @@
 
 fields:
 
-    userid:
-        span: auto
-        label: userid
-        comment: userid
-
     tokenButton:
         type: partial
-        path: $/inetis/googlephotos/controllers/oauth/_login_button.htm
+        label: Authentication
+        path: $/inetis/googlephotos/controllers/oauth/_oauth_button.htm

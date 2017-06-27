@@ -105,6 +105,13 @@ abstract class BaseSettingsProvider
         return $this->tokenRequestUrl;
     }
 
+    public function getOAuthToken()
+    {
+        return new OAuthToken($this, $this->getStoredToken());
+    }
+
+    abstract public function hasValidToken();
+
     abstract public function getStoredToken(); // Return an object that implements StoredTokenInterface
 
     abstract public function setNewStoredToken($newToken, $state);
