@@ -23,8 +23,14 @@ class ComponentSettingsProvider extends SettingsProvider implements PicasaSettin
         return $this->properties->get('thumbSize') ?: '160';
     }
 
-    public function getImageMaxSize()
+    public function getImagesCropMode()
     {
-        return $this->properties->get('imgSize') ?: '300';
+        return $this->properties->get('cropMode') ?: 's';
+    }
+
+    public function getImagesShouldCrop()
+    {
+        $shouldCrop = $this->properties->get('shouldCrop');
+        return (is_null($shouldCrop)) ? true : (bool) $shouldCrop;
     }
 }

@@ -24,7 +24,7 @@ class GoogleAlbums extends ComponentBase
     {
         return [
             'visibility' => [
-                'title' => 'visibility',
+                'title' => 'Visibility',
                 'description' => 'The visibility level of the albums to show',
                 'default' => 'all',
                 'type' => 'dropdown',
@@ -34,8 +34,22 @@ class GoogleAlbums extends ComponentBase
                 'title' => 'Thumbnail size',
                 'description' => 'The height of the thumbnails to generate',
                 'default' => '160',
-                'type' => 'text'
-            ]
+                'type' => 'string'
+            ],
+            'shouldCrop' => [
+                'title' => 'Square crop thumbnails',
+                'description' => 'Whether to crop or just resize thumbnails',
+                'default' => 1,
+                'type' => 'dropdown',
+                'options' => [ 0 => 'No', 1 => 'Yes' ]
+            ],
+            'cropMode' => [
+                'title' => 'Crop mode',
+                'description' => 'The dimension to use with "Thumbnail size" when resizing or cropping the thumbnails',
+                'default' => 's',
+                'type' => 'dropdown',
+                'options' => [ 'h' => 'Height', 'w' => 'Width', 's' => 'Smallest', 'l' => 'Largest' ]
+            ],
         ];
     }
 
