@@ -1,8 +1,15 @@
 <?php namespace Inetis\GooglePhotos\Components;
+
 use Cms\Classes\ComponentBase;
-use Inetis\GooglePhotos\Models\Settings as PicasaSettings;
+use Inetis\GooglePhotos\PicasaWebData\OctoberCms\ComponentSettingsProvider;
+use Inetis\GooglePhotos\PicasaWebData\PicasaClient;
+
 class GoogleAlbum extends ComponentBase
 {
+    /**
+     * @var PicasaClient
+     */
+    private $picasaClient;
 
     public function componentDetails()
     {
@@ -20,37 +27,40 @@ class GoogleAlbum extends ComponentBase
                 'description' => 'ID of the picasa album',
                 'default'     => '{{ :albumId }}',
                 'type' => 'string'
+            ],
+            'visibility' => [
+                'title' => 'visibility',
+                'description' => 'The visibility level of the albums to show',
+                'default' => 'all',
+                'type' => 'dropdown',
+                'options' => [ 'all' => 'All', 'public' => 'Public', 'private' => 'Private', 'visible' => 'Visible' ]
+            ],
+            'thumbSize' => [
+                'title' => 'Thumbnail size',
+                'description' => 'The height of the thumbnails to generate',
+                'default' => '160',
+                'type' => 'text'
+            ],
+            'imgSize' => [
+                'title' => 'Image size',
+                'description' => 'The height of the images to display',
+                'default' => '300',
+                'type' => 'text'
             ]
         ];
     }
 
     public function onRun()
     {
-        $this->userid = PicasaSettings::get('userid');
-        $this->getOneAlbum($this->property('albumId'));
+        $componentSettings = new ComponentSettingsProvider($this->properties);
+        $token = $componentSettings->getOAuthToken();
+        $this->picasaClient = new PicasaClient($componentSettings, $token);
     }
 
-    private function getOneAlbum($albumId)
+    public function images()
     {
-        $url = "https://picasaweb.google.com/data/feed/base/"
-                . "user/" . $this->userid
-                . "/albumid/" . $albumId
-                . "?alt=rss&kind=photo&thumbsize=220";
-
-        $this->page['album'] = simplexml_load_file($url);
-        
-        foreach ($this->page['album']->channel->item as $album)
-        { 
-            //extract image of the album
-            $regexp = '@src="([^"]+)"@';
-            preg_match_all($regexp, $album->description, $result);    
-            $album->image = str_replace('src="', '', $result[0][0]);   
-        }
-        
-        /*echo '<pre>';
-        print_r($this->page['album']);
-        echo '</pre>';
-         */
+        $albumId = $this->property('albumId');
+        return $this->picasaClient->getAlbumImages($albumId);
     }
 
 }

@@ -1,10 +1,12 @@
-<h3>All galeries</h3>
+<h3>All galleries</h3>
 
-{% for item in albums.entry %}
-    <a href="albums/{{ item.albumid }}">
+<div class="row">
+{% for item in __SELF__.albums %}
+    <a href="albums/{{ item.albumID }}">
         <div class="col-lg-2 col-md-4 col-xs-6 thumb">
-            {{ item.title }}       
-            <img class="img-responsive" src="{{ item.image }}" alt="" />
+            {{ item.albumTitle }}
+            <img class="img-responsive" src="{{ item.thumbURL }}" alt="" />
         </div>
     </a>
 {% endfor %}
+</div>

@@ -4,27 +4,27 @@ use Inetis\GooglePhotos\PicasaWebData\Base\Settings\PicasaSettingsProviderInterf
 
 class ComponentSettingsProvider extends SettingsProvider implements PicasaSettingsProviderInterface
 {
-    private $componentProperties;
+    private $properties;
 
     public function __construct($componentProperties)
     {
         parent::__construct();
 
-        $this->componentProperties = $componentProperties;
+        $this->properties = collect($componentProperties);
     }
 
     public function getVisibility()
     {
-        return $this->componentProperties['visibility'] ?: 'public';
+        return $this->properties->get('visibility') ?: 'public';
     }
 
     public function getAlbumThumbSize()
     {
-        return $this->componentProperties['thumbSize'] ?: '160';
+        return $this->properties->get('thumbSize') ?: '160';
     }
 
     public function getImageMaxSize()
     {
-        return $this->componentProperties['imgSize'] ?: '300';
+        return $this->properties->get('imgSize') ?: '300';
     }
 }

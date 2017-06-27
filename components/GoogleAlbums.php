@@ -1,8 +1,16 @@
 <?php namespace Inetis\GooglePhotos\Components;
+
 use Cms\Classes\ComponentBase;
 use Inetis\GooglePhotos\Models\Settings as PicasaSettings;
+use Inetis\GooglePhotos\PicasaWebData\OctoberCms\ComponentSettingsProvider;
+use Inetis\GooglePhotos\PicasaWebData\PicasaClient;
+
 class GoogleAlbums extends ComponentBase
 {
+    /**
+     * @var PicasaClient
+     */
+    private $picasaClient;
 
     public function componentDetails()
     {
@@ -12,30 +20,34 @@ class GoogleAlbums extends ComponentBase
         ];
     }
 
-    public function onRun()
+    public function defineProperties()
     {
-       $this->userid = PicasaSettings::get('userid');
-       $this->getAllAlbums();
+        return [
+            'visibility' => [
+                'title' => 'visibility',
+                'description' => 'The visibility level of the albums to show',
+                'default' => 'all',
+                'type' => 'dropdown',
+                'options' => [ 'all' => 'All', 'public' => 'Public', 'private' => 'Private', 'visible' => 'Visible' ]
+            ],
+            'thumbSize' => [
+                'title' => 'Thumbnail size',
+                'description' => 'The height of the thumbnails to generate',
+                'default' => '160',
+                'type' => 'text'
+            ]
+        ];
     }
 
-    private function getAllAlbums()
+    public function onRun()
     {
-        $url = "https://picasaweb.google.com/data/feed/base/"
-                . "user/" . $this->userid;
+        $componentSettings = new ComponentSettingsProvider($this->properties);
+        $token = $componentSettings->getOAuthToken();
+        $this->picasaClient = new PicasaClient($componentSettings, $token);
+    }
 
-        $this->page['albums'] = simplexml_load_file($url);
-        
-        foreach ($this->page['albums']->entry as $album)
-        {    
-            //extract image of the album
-            $regexp = '@src="([^"]+)"@';
-            preg_match_all($regexp, $album->summary, $result);    
-            $album->image = str_replace('src="', '', $result[0][0]);
-            
-            //extract id of the album
-            $url = parse_url($album->link[0]->attributes()->href);
-            $tokens = explode('/', $url['path']);
-            $album->albumid = $tokens[sizeof($tokens)-1];  
-        }
+    public function albums()
+    {
+        return $this->picasaClient->getAlbumsList();
     }
 }
