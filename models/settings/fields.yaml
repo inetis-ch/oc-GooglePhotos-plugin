@@ -6,5 +6,12 @@ fields:
 
     tokenButton:
         type: partial
+        span: left
         label: Authentication
         path: $/inetis/googlephotos/controllers/oauth/_oauth_button.htm
+
+    cacheDuration:
+        type: number
+        span: left
+        label: Cache duration (minutes)
+        default: 0

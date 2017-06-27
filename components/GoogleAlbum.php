@@ -1,6 +1,8 @@
 <?php namespace Inetis\GooglePhotos\Components;
 
+use Cache;
 use Cms\Classes\ComponentBase;
+use Inetis\GooglePhotos\Models\Settings;
 use Inetis\GooglePhotos\PicasaWebData\OctoberCms\ComponentSettingsProvider;
 use Inetis\GooglePhotos\PicasaWebData\PicasaClient;
 
@@ -14,8 +16,8 @@ class GoogleAlbum extends ComponentBase
     public function componentDetails()
     {
         return [
-            'name' => 'Display one album',
-            'description' => 'No description provided yet...'
+            'name' => 'Google Photos album',
+            'description' => 'Display one album of the Google Photos account'
         ];
     }
 
@@ -24,7 +26,7 @@ class GoogleAlbum extends ComponentBase
         return [
             'albumId' => [
                 'title' => 'Album ID',
-                'description' => 'ID of the picasa album',
+                'description' => 'ID of the Google Photos album to show',
                 'default' => '{{ :albumId }}',
                 'type' => 'string'
             ],
@@ -68,7 +70,14 @@ class GoogleAlbum extends ComponentBase
     public function images()
     {
         $albumId = $this->property('albumId');
-        return $this->picasaClient->getAlbumImages($albumId);
+
+        return Cache::remember(
+            'picasaImages-' . $albumId,
+            Settings::get('cacheDuration'),
+            function() use($albumId) {
+                return $this->picasaClient->getAlbumImages($albumId);
+            }
+        );
     }
 
 }
