@@ -6,9 +6,12 @@ $settingsProvider = new SettingsProvider();
 $isAuthenticated  = $settingsProvider->hasValidToken();
 
 ?>
-<span id="googlePhotosOAuthButton">
+<div id="googlePhotosOAuthButton">
+    <label>GooglePhotos Authentication</label>
+
+    <div>
     <?php if ($isAuthenticated): ?>
-        <button class="btn btn-danger" data-request="<?= $this->getEventHandler('onLogout') ?>">
+        <button class="btn btn-danger" data-request="<?= $this->getEventHandler('onLogout') ?>" data-request-confirm="Are you sure you want to revoke your authorization token?">
             Sign out
         </button>
     <?php else: ?>
@@ -16,4 +19,5 @@ $isAuthenticated  = $settingsProvider->hasValidToken();
             Sign in
         </a>
     <?php endif; ?>
-</span>
+    </div>
+</div>

@@ -7,7 +7,6 @@ fields:
     tokenButton:
         type: Inetis\GooglePhotos\FormWidgets\OAuthButton
         span: left
-        label: Authentication
 
     cacheDuration:
         type: number
