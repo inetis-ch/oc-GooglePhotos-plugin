@@ -26,16 +26,26 @@ class Plugin extends PluginBase
     public function registerComponents()
     {
         return [
-            'Inetis\GooglePhotos\Components\GoogleAlbums' => 'googleAlbums',
-            'Inetis\GooglePhotos\Components\GoogleAlbum' => 'googleAlbum'
+            'Inetis\GooglePhotos\Components\GoogleAlbums' => 'googlePhotosAlbums',
+            'Inetis\GooglePhotos\Components\GoogleAlbum' => 'googlePhotosAlbum'
         ];
     }
 
     public function registerPageSnippets()
     {
         return [
-            'Inetis\GooglePhotos\Components\GoogleAlbums' => 'googleAlbums',
-            'Inetis\GooglePhotos\Components\GoogleAlbum' => 'googleAlbum'
+            'Inetis\GooglePhotos\Components\GoogleAlbums' => 'googlePhotosAlbums',
+            'Inetis\GooglePhotos\Components\GoogleAlbum' => 'googlePhotosAlbum'
+        ];
+    }
+
+    public function registerFormWidgets()
+    {
+        return [
+            'Inetis\GooglePhotos\FormWidgets\OAuthButton' => [
+                'label' => 'Location Selector',
+                'code'  => 'googlePhotosOAuthButton'
+            ],
         ];
     }
 

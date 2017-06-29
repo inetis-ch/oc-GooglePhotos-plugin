@@ -1,0 +1,19 @@
+<?php
+
+use Inetis\GooglePhotos\PicasaWebData\OctoberCms\SettingsProvider;
+
+$settingsProvider = new SettingsProvider();
+$isAuthenticated  = $settingsProvider->hasValidToken();
+
+?>
+<span id="googlePhotosOAuthButton">
+    <?php if ($isAuthenticated): ?>
+        <button class="btn btn-danger" data-request="<?= $this->getEventHandler('onLogout') ?>">
+            Sign out
+        </button>
+    <?php else: ?>
+        <a class="btn btn-primary" href="<?= $settingsProvider->buildAuthUrl(csrf_token()) ?>">
+            Sign in
+        </a>
+    <?php endif; ?>
+</span>

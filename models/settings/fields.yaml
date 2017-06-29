@@ -5,10 +5,9 @@
 fields:
 
     tokenButton:
-        type: partial
+        type: Inetis\GooglePhotos\FormWidgets\OAuthButton
         span: left
         label: Authentication
-        path: $/inetis/googlephotos/controllers/oauth/_oauth_button.htm
 
     cacheDuration:
         type: number

@@ -1,8 +1,12 @@
 <?php namespace Inetis\GooglePhotos\Controllers;
 
+use Backend;
 use Backend\Classes\Controller;
+use Exception;
+use Flash;
 use Inetis\GooglePhotos\PicasaWebData\OctoberCms\SettingsProvider;
 use Input;
+use Redirect;
 use Session;
 
 class OAuth extends Controller
@@ -15,7 +19,16 @@ class OAuth extends Controller
             abort(403, 'CSRF token mismatch');
         }
 
-        $settingsProvider = new SettingsProvider();
-        $settingsProvider->exchangeToken(Input::get('code'));
+        try
+        {
+            $settingsProvider = new SettingsProvider();
+            $settingsProvider->exchangeToken(Input::get('code'));
+            Flash::success('Authenticated successfully');
+        }
+        catch (Exception $e) {
+            Flash::error($e->getMessage());
+        }
+
+        return Redirect::to(Backend::url('system/settings/update/inetis/googlephotos/settings'));
     }
 }
