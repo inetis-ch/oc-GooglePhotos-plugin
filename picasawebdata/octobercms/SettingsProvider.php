@@ -12,6 +12,10 @@ class SettingsProvider extends BaseSettingsProvider
     {
         $this->tokenRedirectUrl = Request::root() . '/' . Config::get('cms.backendUri');
         $this->tokenRedirectUrl .= '/inetis/googlephotos/oauth/callback';
+
+        $this->clientId = Config::get('inetis.googlephotos::clientId');
+        $this->clientSecret = Config::get('inetis.googlephotos::clientSecret');
+        $this->httpReferrer = Config::get('inetis.googlephotos::httpReferrer');
     }
 
     public function hasValidToken()

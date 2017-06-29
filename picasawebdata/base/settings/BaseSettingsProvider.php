@@ -5,8 +5,8 @@ use Inetis\GooglePhotos\PicasaWebData\Base\Tokens\OAuthToken;
 
 abstract class BaseSettingsProvider
 {
-    protected $clientId = "663112926540-dvupotbji98icmhet7vjaehbfekbha9s.apps.googleusercontent.com";
-    protected $clientSecret = "eNyOZ0AylFkKbqRylZYVHWLS";
+    protected $clientId = "";
+    protected $clientSecret = "";
     protected $httpReferrer = "";
 
     protected $tokenRenewUrl = "https://www.googleapis.com/oauth2/v3/token";
