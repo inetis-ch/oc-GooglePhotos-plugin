@@ -16,8 +16,8 @@ class Plugin extends PluginBase
     public function pluginDetails()
     {
         return [
-            'name' => 'Insert image from Google Photos',
-            'description' => 'This plugin allows to display albums from your Google Photos (Picasa) account',
+            'name' => 'inetis.googlephotos::lang.plugin.name',
+            'description' => 'inetis.googlephotos::lang.plugin.description',
             'author' => 'inetis',
             'icon' => 'icon-image'
         ];
@@ -26,16 +26,16 @@ class Plugin extends PluginBase
     public function registerComponents()
     {
         return [
-            'Inetis\GooglePhotos\Components\GoogleAlbums' => 'googlePhotosAlbums',
-            'Inetis\GooglePhotos\Components\GoogleAlbum' => 'googlePhotosAlbum'
+            'Inetis\GooglePhotos\Components\GooglePhotosAlbums' => 'googlePhotosAlbums',
+            'Inetis\GooglePhotos\Components\GooglePhotosAlbum' => 'googlePhotosAlbum'
         ];
     }
 
     public function registerPageSnippets()
     {
         return [
-            'Inetis\GooglePhotos\Components\GoogleAlbums' => 'googlePhotosAlbums',
-            'Inetis\GooglePhotos\Components\GoogleAlbum' => 'googlePhotosAlbum'
+            'Inetis\GooglePhotos\Components\GooglePhotosAlbums' => 'googlePhotosAlbums',
+            'Inetis\GooglePhotos\Components\GooglePhotosAlbum' => 'googlePhotosAlbum'
         ];
     }
 
@@ -53,8 +53,8 @@ class Plugin extends PluginBase
     {
         return [
             'settings' => [
-                'label' => 'Google Photos',
-                'description' => 'Settings for Google Photos plugin',
+                'label' => 'inetis.googlephotos::lang.settings.menuEntry.label',
+                'description' => 'inetis.googlephotos::lang.settings.menuEntry.description',
                 'icon' => 'icon-image',
                 'class' => 'Inetis\GooglePhotos\Models\Settings',
             ]

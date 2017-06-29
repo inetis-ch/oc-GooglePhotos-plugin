@@ -11,5 +11,5 @@ fields:
     cacheDuration:
         type: number
         span: left
-        label: Cache duration (minutes)
+        label: 'inetis.googlephotos::lang.settings.fields.cacheDurationLabel'
         default: 0

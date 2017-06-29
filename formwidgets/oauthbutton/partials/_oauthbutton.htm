@@ -7,16 +7,16 @@ $isAuthenticated  = $settingsProvider->hasValidToken();
 
 ?>
 <div id="googlePhotosOAuthButton">
-    <label>GooglePhotos Authentication</label>
+    <label><?= Lang::get('inetis.googlephotos::lang.settings.fields.oAuthLabel') ?></label>
 
     <div>
     <?php if ($isAuthenticated): ?>
-        <button class="btn btn-danger" data-request="<?= $this->getEventHandler('onLogout') ?>" data-request-confirm="Are you sure you want to revoke your authorization token?">
-            Sign out
+        <button class="btn btn-danger" data-request="<?= $this->getEventHandler('onLogout') ?>" data-request-confirm="<?= Lang::get('inetis.googlephotos::lang.settings.fields.signOutConfirm') ?>">
+            <?= Lang::get('inetis.googlephotos::lang.settings.fields.oAuthSignOut') ?>
         </button>
     <?php else: ?>
         <a class="btn btn-primary" href="<?= $settingsProvider->buildAuthUrl(csrf_token()) ?>">
-            Sign in
+            <?= Lang::get('inetis.googlephotos::lang.settings.fields.oAuthSignIn') ?>
         </a>
     <?php endif; ?>
     </div>

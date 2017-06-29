@@ -4,6 +4,7 @@ use Backend\Classes\WidgetBase;
 use Flash;
 use Http;
 use Inetis\GooglePhotos\PicasaWebData\OctoberCms\SettingsProvider;
+use Lang;
 
 class OAuthButton extends WidgetBase
 {
@@ -25,11 +26,11 @@ class OAuthButton extends WidgetBase
 
         if ($logoutRequest->code === 200)
         {
-            Flash::success('Access revoked successfully');
+            Flash::success(Lang::get('inetis.googlephotos::lang.messages.revokeSuccess'));
         }
         else
         {
-            Flash::error('Error trying to revoke access: ' . $response->error_description);
+            Flash::error(Lang::get('inetis.googlephotos::lang.messages.revokeError', ['error' => $response->error_description]));
         }
 
         return [

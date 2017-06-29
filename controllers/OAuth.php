@@ -6,6 +6,7 @@ use Exception;
 use Flash;
 use Inetis\GooglePhotos\PicasaWebData\OctoberCms\SettingsProvider;
 use Input;
+use Lang;
 use Redirect;
 use Session;
 
@@ -16,14 +17,14 @@ class OAuth extends Controller
         // Check CSRF token
         if (Session::token() !== Input::get('state'))
         {
-            abort(403, 'CSRF token mismatch');
+            abort(403, Lang::get('inetis.googlephotos::lang.messages.csrfMismatch'));
         }
 
         try
         {
             $settingsProvider = new SettingsProvider();
             $settingsProvider->exchangeToken(Input::get('code'));
-            Flash::success('Authenticated successfully');
+            Flash::success(Lang::get('inetis.googlephotos::lang.messages.authSuccess'));
         }
         catch (Exception $e) {
             Flash::error($e->getMessage());
