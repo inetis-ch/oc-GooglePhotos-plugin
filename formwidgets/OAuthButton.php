@@ -18,6 +18,11 @@ class OAuthButton extends WidgetBase
         return $this->makePartial('oauthbutton');
     }
 
+    public function getSaveValue()
+    {
+        return null;
+    }
+
     public function onLogout()
     {
         $settingsProvider = new SettingsProvider();

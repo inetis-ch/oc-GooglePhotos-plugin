@@ -15,8 +15,11 @@ return [
             'oAuthLabel' => 'Authentification GooglePhotos',
             'oAuthSignIn' => 'Connexion',
             'oAuthSignOut' => 'Déconnexion',
-            'signOutConfirm' => 'Êtes-vous sûr de vouloir révoquer l\'accès à Google Photos pour ce plugin?',
-            'cacheDurationLabel' => 'Durée du cache (minutes)'
+            'signOutConfirm' => 'Êtes-vous sûr de vouloir révoquer l\'accès de ce plugin à Google Photos?',
+            'cacheDurationLabel' => 'Durée du cache (minutes)',
+            'hiddenAlbumsLabel' => 'Albums masqués',
+            'hiddenAlbumsDescription' => 'Vous pouvez indiquer ici une liste d\'albums à ignorer. Par exemple, vous pouvez masquer l\'album "Auto Backup" généré by Picasa.',
+            'hiddenAlbumLabel' => 'Nom ou ID d\'album'
         ]
     ],
 

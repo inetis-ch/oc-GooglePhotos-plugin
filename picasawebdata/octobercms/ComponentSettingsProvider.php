@@ -1,5 +1,6 @@
 <?php namespace Inetis\GooglePhotos\PicasaWebData\OctoberCms;
 
+use Inetis\GooglePhotos\Models\Settings;
 use Inetis\GooglePhotos\PicasaWebData\Base\Settings\PicasaSettingsProviderInterface;
 
 class ComponentSettingsProvider extends SettingsProvider implements PicasaSettingsProviderInterface
@@ -42,5 +43,11 @@ class ComponentSettingsProvider extends SettingsProvider implements PicasaSettin
     public function getStartIndex()
     {
         return $this->properties->get('currentPage', 1) * $this->getMaxResults();
+    }
+
+    public function getHiddenAlbums()
+    {
+        $hiddenAlbums = Settings::get('hiddenAlbums', []);
+        return $hiddenAlbums = collect($hiddenAlbums)->flatten()->toArray();
     }
 }

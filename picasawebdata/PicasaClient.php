@@ -1,7 +1,6 @@
 <?php namespace Inetis\GooglePhotos\PicasaWebData;
 
 use Exception;
-use Illuminate\Pagination\LengthAwarePaginator;
 use stdClass;
 use SimpleXMLElement;
 use Inetis\GooglePhotos\PicasaWebData\Base\Settings\PicasaSettingsProviderInterface;
@@ -61,11 +60,16 @@ class PicasaClient
             throw new Exception("Error trying to query Picasa API. Response status: " . $http->code);
 
         $albums = [];
+        $albumsToIgnore = $this->settings->getHiddenAlbums();
         $xmlResult = $this->decodeXml($http->body);
         $namespaces = $xmlResult->getDocNamespaces();
         foreach ($xmlResult->entry as $entry)
         {
             $album = $entry->children($namespaces['gphoto']);
+
+            if (in_array($album->id, $albumsToIgnore) || in_array($entry->title, $albumsToIgnore))
+                continue;
+
             $albumId = (string) $album->id;
             $media = $entry->children($namespaces['media']);
             $thumbnailAttr = $media->group->thumbnail->attributes();
@@ -154,7 +158,6 @@ class PicasaClient
             $images[]    = $photoProperties;
         }
 
-        $totalItems = $xmlResult->getNamespaces($namespaces['gphoto']);
         return $images;
     }
 
