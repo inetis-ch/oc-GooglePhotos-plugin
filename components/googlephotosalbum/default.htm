@@ -1,12 +1,30 @@
-<h3>{{ album.channel.title }}</h3>
+<h3>{{ __SELF__.albumTitle }}</h3>
 
 <div class="row">
 {% for item in __SELF__.images %}
-    <a class="col-lg-3 col-md-4 col-xs-6 thumb" href="{{ item.photoUrl }}">
+    <a class="col-lg-3 col-md-4 col-xs-6 thumb" href="{{ item.photoUrl }}" data-toggle="modal" data-remote="false" data-target="#inetisPicasaImageModal">
         <div>
-            {{ item.photoTitle }}
             <img class="img-responsive" src="{{ item.thumbUrl }}" alt="" />
+            {{ item.photoTitle }}
         </div>
     </a>
 {% endfor %}
 </div>
+
+<div class="control-popup modal fade" id="inetisPicasaImageModal">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-body">
+            </div>
+        </div>
+    </div>
+</div>
+
+<script>
+    window.addEventListener('load', function() {
+        $("#inetisPicasaImageModal").on("show.bs.modal", function(e) {
+            var link = $(e.relatedTarget);
+            $(this).find(".modal-body").html('<img class="img-responsive" src="'+ link.attr('href') +'" alt="" />');
+        });
+    });
+</script>
