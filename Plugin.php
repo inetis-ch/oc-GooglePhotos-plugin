@@ -33,10 +33,7 @@ class Plugin extends PluginBase
 
     public function registerPageSnippets()
     {
-        return [
-            'Inetis\GooglePhotos\Components\GooglePhotosAlbums' => 'googlePhotosAlbums',
-            'Inetis\GooglePhotos\Components\GooglePhotosAlbum' => 'googlePhotosAlbum'
-        ];
+        return $this->registerComponents();
     }
 
     public function registerFormWidgets()

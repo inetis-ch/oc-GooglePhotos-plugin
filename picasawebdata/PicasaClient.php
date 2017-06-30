@@ -1,6 +1,7 @@
 <?php namespace Inetis\GooglePhotos\PicasaWebData;
 
 use Exception;
+use Illuminate\Pagination\LengthAwarePaginator;
 use stdClass;
 use SimpleXMLElement;
 use Inetis\GooglePhotos\PicasaWebData\Base\Settings\PicasaSettingsProviderInterface;
@@ -40,12 +41,15 @@ class PicasaClient
      */
     public function getAlbumsList()
     {
-        $url = "https://picasaweb.google.com/data/feed/api/user/default"
-            . "?kind=album"
-            . "&access=" . $this->settings->getVisibility()
-            . "&thumbsize=" . $this->settings->getAlbumThumbSize();
+        $url = "https://picasaweb.google.com/data/feed/api/user/default";
 
         $http = Http::make($url, Http::METHOD_GET);
+        $http->data([
+            'kind' => 'album',
+            'access' => $this->settings->getVisibility(),
+            'thumbsize' => $this->settings->getAlbumThumbSize()
+        ]);
+        $this->addPagination($http);
         $http->header([
             'Authorization' => 'Bearer ' . $this->token->getAccessToken(),
             'GData-Version' => '3',
@@ -99,11 +103,15 @@ class PicasaClient
      */
     public function getAlbumImages($albumId, &$albumTitle = "")
     {
-        $url = "https://picasaweb.google.com/data/feed/api/user/default/albumid/" . $albumId
-            . "?thumbsize=" . $this->settings->getAlbumThumbSize()
-            . "&access=" . $this->settings->getVisibility();
+        $url = "https://picasaweb.google.com/data/feed/api/user/default/albumid/" . $albumId;
 
         $http = Http::make($url, Http::METHOD_GET);
+        $http->data([
+            'thumbsize' => $this->settings->getAlbumThumbSize(),
+            'access' => $this->settings->getVisibility(),
+            'imgmax' => 'd' // Retrieve original image (full size)
+        ]);
+        $this->addPagination($http);
         $http->header([
             'Authorization' => 'Bearer ' . $this->token->getAccessToken(),
             'GData-Version' => '3',
@@ -145,7 +153,31 @@ class PicasaClient
 
             $images[]    = $photoProperties;
         }
+
+        $totalItems = $xmlResult->getNamespaces($namespaces['gphoto']);
         return $images;
+    }
+
+    /**
+     * Add pagination controls as query string to an url based on GData pagination format.
+     *
+     * @see https://developers.google.com/gdata/docs/2.0/reference#max-results
+     * @see https://developers.google.com/gdata/docs/2.0/reference#start-index
+     *
+     * @param Http $http                An instance of http client which to append pagination parameters
+     */
+    private function addPagination($http)
+    {
+        $startIndex = $this->settings->getStartIndex();
+        $pageSize = $this->settings->getMaxResults();
+        if ($startIndex)
+        {
+            $http->data($startIndex);
+        }
+        if ($pageSize)
+        {
+            $http->data($pageSize);
+        }
     }
 
     /**

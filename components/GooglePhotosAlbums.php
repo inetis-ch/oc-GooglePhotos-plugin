@@ -3,6 +3,7 @@
 use Cache;
 use Cms\Classes\ComponentBase;
 use Cms\Classes\Page;
+use Illuminate\Pagination\LengthAwarePaginator;
 use Inetis\GooglePhotos\Models\Settings;
 use Inetis\GooglePhotos\PicasaWebData\OctoberCms\ComponentSettingsProvider;
 use Inetis\GooglePhotos\PicasaWebData\PicasaClient;
@@ -13,6 +14,8 @@ class GooglePhotosAlbums extends ComponentBase
      * @var PicasaClient
      */
     private $picasaClient;
+
+    private $albumsData = null;
 
     public function componentDetails()
     {
@@ -42,11 +45,26 @@ class GooglePhotosAlbums extends ComponentBase
                     'visible' => 'inetis.googlephotos::lang.component.fields.optionVisible'
                 ]
             ],
+            'pageSize' => [
+                'title' => 'inetis.googlephotos::lang.component.fields.pageSizeTitle',
+                'description' => 'inetis.googlephotos::lang.component.fields.pageSizeDescription',
+                'default' => '0',
+                'type' => 'string',
+                'group' => 'inetis.googlephotos::lang.component.fieldsGroups.pagination'
+            ],
+            'currentPage' => [
+                'title' => 'inetis.googlephotos::lang.component.fields.currentPageTitle',
+                'description' => 'inetis.googlephotos::lang.component.fields.currentPageDescription',
+                'default' => '{{ :page }}',
+                'type' => 'string',
+                'group' => 'inetis.googlephotos::lang.component.fieldsGroups.pagination'
+            ],
             'thumbSize' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.thumbSizeTitle',
                 'description' => 'inetis.googlephotos::lang.component.fields.thumbSizeDescription',
                 'default' => '160',
-                'type' => 'string'
+                'type' => 'string',
+                'group' => 'inetis.googlephotos::lang.component.fieldsGroups.thumbnails'
             ],
             'cropMode' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.cropModeTitle',
@@ -58,7 +76,8 @@ class GooglePhotosAlbums extends ComponentBase
                     'w' => 'inetis.googlephotos::lang.component.fields.optionWidth',
                     's' => 'inetis.googlephotos::lang.component.fields.optionSmallest',
                     'l' => 'inetis.googlephotos::lang.component.fields.optionLargest'
-                ]
+                ],
+                'group' => 'inetis.googlephotos::lang.component.fieldsGroups.thumbnails'
             ],
             'shouldCrop' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.shouldCropTitle',
@@ -68,14 +87,15 @@ class GooglePhotosAlbums extends ComponentBase
                 'options' => [
                     0 => 'inetis.googlephotos::lang.component.fields.optionNo',
                     1 => 'inetis.googlephotos::lang.component.fields.optionYes'
-                ]
+                ],
+                'group' => 'inetis.googlephotos::lang.component.fieldsGroups.thumbnails'
             ],
         ];
     }
 
     public function getAlbumPageOptions()
     {
-        return Page::withComponent('googlephotosAlbum')->sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
+        return Page::withComponent('googlePhotosAlbum')->sortBy('baseFileName')->lists('baseFileName', 'baseFileName');
     }
 
     public function onRun()
@@ -87,12 +107,35 @@ class GooglePhotosAlbums extends ComponentBase
 
     public function albums()
     {
-        return Cache::remember(
-            'picasaAlbums',
-            Settings::get('cacheDuration'),
-            function() {
-                return collect($this->picasaClient->getAlbumsList());
-            }
-        );
+        $this->loadData();
+        return $this->albumsData;
+    }
+
+    public function pagination()
+    {
+        $this->loadData();
+    }
+
+    private function loadData()
+    {
+        if (!is_null($this->albumsData))
+            return;
+
+        $cacheKey = 'picasaAlbums';
+        $cacheDuration = (int) Settings::get('cacheDuration');
+        $cacheCallback = function() {
+            return $this->picasaClient->getAlbumsList();
+        };
+
+        if ($cacheDuration)
+        {
+            $result = Cache::remember($cacheKey, $cacheDuration, $cacheCallback);
+        }
+        else
+        {
+            $result = $cacheCallback();
+        }
+
+        $this->albumsData = collect($result);
     }
 }

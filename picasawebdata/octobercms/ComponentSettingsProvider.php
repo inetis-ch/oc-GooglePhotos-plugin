@@ -33,4 +33,14 @@ class ComponentSettingsProvider extends SettingsProvider implements PicasaSettin
         $shouldCrop = $this->properties->get('shouldCrop');
         return (is_null($shouldCrop)) ? true : (bool) $shouldCrop;
     }
+
+    public function getMaxResults()
+    {
+        return $this->properties->get('pageSize', 0);
+    }
+
+    public function getStartIndex()
+    {
+        return $this->properties->get('currentPage', 1) * $this->getMaxResults();
+    }
 }

@@ -13,6 +13,10 @@ class GooglePhotosAlbum extends ComponentBase
      */
     private $picasaClient;
 
+    private $albumData = null;
+
+    private $albumTitle;
+
     public function componentDetails()
     {
         return [
@@ -42,11 +46,26 @@ class GooglePhotosAlbum extends ComponentBase
                     'visible' => 'inetis.googlephotos::lang.component.fields.optionVisible'
                 ]
             ],
+            'pageSize' => [
+                'title' => 'inetis.googlephotos::lang.component.fields.pageSizeTitle',
+                'description' => 'inetis.googlephotos::lang.component.fields.pageSizeDescription',
+                'default' => '0',
+                'type' => 'string',
+                'group' => 'inetis.googlephotos::lang.component.fieldsGroups.pagination'
+            ],
+            'currentPage' => [
+                'title' => 'inetis.googlephotos::lang.component.fields.currentPageTitle',
+                'description' => 'inetis.googlephotos::lang.component.fields.currentPageDescription',
+                'default' => '{{ :page }}',
+                'type' => 'string',
+                'group' => 'inetis.googlephotos::lang.component.fieldsGroups.pagination'
+            ],
             'thumbSize' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.thumbSizeTitle',
                 'description' => 'inetis.googlephotos::lang.component.fields.thumbSizeDescription',
                 'default' => '160',
-                'type' => 'string'
+                'type' => 'string',
+                'group' => 'inetis.googlephotos::lang.component.fieldsGroups.thumbnails'
             ],
             'cropMode' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.cropModeTitle',
@@ -58,7 +77,8 @@ class GooglePhotosAlbum extends ComponentBase
                     'w' => 'inetis.googlephotos::lang.component.fields.optionWidth',
                     's' => 'inetis.googlephotos::lang.component.fields.optionSmallest',
                     'l' => 'inetis.googlephotos::lang.component.fields.optionLargest'
-                ]
+                ],
+                'group' => 'inetis.googlephotos::lang.component.fieldsGroups.thumbnails'
             ],
             'shouldCrop' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.shouldCropTitle',
@@ -68,7 +88,8 @@ class GooglePhotosAlbum extends ComponentBase
                 'options' => [
                     0 => 'inetis.googlephotos::lang.component.fields.optionNo',
                     1 => 'inetis.googlephotos::lang.component.fields.optionYes'
-                ]
+                ],
+                'group' => 'inetis.googlephotos::lang.component.fieldsGroups.thumbnails'
             ],
         ];
     }
@@ -82,15 +103,37 @@ class GooglePhotosAlbum extends ComponentBase
 
     public function images()
     {
-        $albumId = $this->property('albumId');
-
-        return Cache::remember(
-            'picasaImages-' . $albumId,
-            Settings::get('cacheDuration'),
-            function() use($albumId) {
-                return collect($this->picasaClient->getAlbumImages($albumId));
-            }
-        );
+        $this->loadData();
+        return $this->albumData;
     }
 
+    public function albumTitle()
+    {
+        $this->loadData();
+        return $this->albumTitle;
+    }
+
+    private function loadData()
+    {
+        if (!is_null($this->albumData))
+            return;
+
+        $albumId = $this->property('albumId');
+        $cacheKey = 'picasaImages-' . $albumId . '_';
+        $cacheDuration = (int) Settings::get('cacheDuration');
+        $cacheCallback = function() use($albumId) {
+            return $this->picasaClient->getAlbumImages($albumId, $this->albumTitle);
+        };
+
+        if ($cacheDuration)
+        {
+            $result = Cache::remember($cacheKey, $cacheDuration, $cacheCallback);
+        }
+        else
+        {
+            $result = $cacheCallback();
+        }
+
+        $this->albumData = collect($result);
+    }
 }

@@ -39,11 +39,15 @@ return [
             'visibilityTitle' => 'Visibility',
             'visibilityDescription' => 'The visibility level of the albums to show',
             'thumbSizeTitle' => 'Thumbnail size',
-            'thumbSizeDescription' => 'The height of the thumbnails to generate',
+            'thumbSizeDescription' => 'The size of the thumbnails to generate',
             'shouldCropTitle' => 'Square crop thumbnails',
             'shouldCropDescription' => 'Whether to crop or just resize thumbnails',
             'cropModeTitle' => 'Crop mode',
             'cropModeDescription' => 'The dimension to use with "Thumbnail size" when resizing or cropping the thumbnails',
+            'pageSizeTitle' => 'Page size',
+            'pageSizeDescription' => 'Number of items to display per page (0 to disable pagination)',
+            'currentPageTitle' => 'Current page',
+            'currentPageDescription' => 'The parameter to use as current page (starting at 1)',
 
             'optionAll' => 'All',
             'optionPublic' => 'Public',
@@ -55,6 +59,11 @@ return [
             'optionWidth' => 'Width',
             'optionSmallest' => 'Smallest',
             'optionLargest' => 'Largest'
+        ],
+
+        'fieldsGroups' => [
+            'pagination' => 'Pagination',
+            'thumbnails' => 'Thumbnails'
         ]
     ],
 
