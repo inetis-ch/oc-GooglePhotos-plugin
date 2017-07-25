@@ -1,7 +1,9 @@
 <?php namespace Inetis\GooglePhotos\PicasaWebData\Base\Settings;
 
 use Exception;
+use Http;
 use Inetis\GooglePhotos\PicasaWebData\Base\Tokens\OAuthToken;
+use Inetis\GooglePhotos\PicasaWebData\Base\Tokens\StoredTokenInterface;
 
 abstract class BaseSettingsProvider
 {
@@ -18,6 +20,13 @@ abstract class BaseSettingsProvider
     ];
     protected $tokenRedirectUrl = "";
 
+    /**
+     * Build an url that can be called by the user browser to get to the login screen.
+     *
+     * @param string $state             An arbitrary parameter that you can use to store data that will be passed all along the flow
+     *
+     * @return string
+     */
     public function buildAuthUrl($state = null)
     {
         $url = $this->tokenRequestUrl;
@@ -36,7 +45,15 @@ abstract class BaseSettingsProvider
         return $url;
     }
 
-    public function exchangeToken($code, $tokenId = null)
+    /**
+     * Call the OAuth server to exchange a code with a token
+     *
+     * @param string $code              The code obtained after the user has granted access
+     * @param string $state             The state that was passed from the beginning of the flow to the buildAuthUrl() method
+     *
+     * @throws Exception
+     */
+    public function exchangeToken($code, $state = null)
     {
         // Don't use October's Http client here because Google API wants a redirect_uri with special encoding
         $curl = curl_init();
@@ -67,52 +84,103 @@ abstract class BaseSettingsProvider
             throw new Exception("Could not exchange authorization code with oAuth server");
         }
 
-        $this->setNewStoredToken($body, $tokenId);
+        $this->setNewStoredToken($body, $state);
     }
 
-    public function buildRevokeUrl()
+    /**
+     * Get an url that can be called to revoke an OAuth token
+     *
+     * @param OAuthToken $token
+     *
+     * @return string
+     */
+    public function buildRevokeUrl(OAuthToken $token)
     {
-        $token = new OAuthToken($this, $this->getStoredToken());
-
         $url = $this->tokenRevokeUrl;
         $url .= "?token=" . $token->getAccessToken();
 
         return $url;
     }
 
+    /**
+     * Get the "client_id" or "app_id" of your OAuth app.
+     *
+     * @return string
+     */
     public function getClientId()
     {
         return $this->clientId;
     }
 
+    /**
+     * Get the "client_secret" of your OAuth app.
+     *
+     * @return string
+     */
     public function getClientSecret()
     {
         return $this->clientSecret;
     }
 
+    /**
+     * Currently not used in Google OAuth flow, it should return a http referrer to pass along with the request.
+     *
+     * @return string
+     */
     public function getHttpReferrer()
     {
         return $this->httpReferrer;
     }
 
+    /**
+     * Get the base url used to renew an expired token
+     *
+     * @return string
+     */
     public function getTokenRenewUrl()
     {
         return $this->tokenRenewUrl;
     }
 
+    /**
+     * Get the base url used to display the authentication screen to the end user.
+     *
+     * @return string
+     */
     public function getTokenRequestUrl()
     {
         return $this->tokenRequestUrl;
     }
 
+    /**
+     * This method instantiate and returns an OAuthToken object using the current SettingsProvider.
+     * If arguments are passed to this method, they will be passed as is to the getStoredToken() method.
+     *
+     * @return OAuthToken
+     */
     public function getOAuthToken()
     {
-        return new OAuthToken($this, $this->getStoredToken());
+        $arguments = func_get_args();
+        return new OAuthToken($this, $this->getStoredToken(...$arguments));
     }
 
-    abstract public function hasValidToken();
+    /**
+     * Get an instantiated StoredToken. This method may be called with a variable number of parameters.
+     * When overriding this method, you may pass some parameters (for example if your StoredToken have to load one out of many tokens).
+     * If you don't need parameters to instantiate a StoredToken, then you will be able to omit the OAuthToken object when instantiating
+     * a class with a SettingsProvider (for example the OAuthToken class).
+     *
+     * @return StoredTokenInterface
+     */
+    abstract public function getStoredToken();
 
-    abstract public function getStoredToken(); // Return an object that implements StoredTokenInterface
-
+    /**
+     * This method should save a new token received by an OAuth server. It is called by the exchangeToken() method.
+     *
+     * @param mixed $newToken           The raw token received by the OAuth server
+     * @param string $state             The state passed trough the OAuth flow from the beginning of the process when calling buildAuthUrl()
+     *
+     * @return StoredTokenInterface
+     */
     abstract public function setNewStoredToken($newToken, $state);
 }

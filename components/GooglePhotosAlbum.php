@@ -32,7 +32,7 @@ class GooglePhotosAlbum extends ComponentBase
                 'title' => 'inetis.googlephotos::lang.component.fields.albumIdTitle',
                 'description' => 'inetis.googlephotos::lang.component.fields.albumIdDescription',
                 'default' => '{{ :albumId }}',
-                'type' => 'string'
+                'type' => 'dropdown'
             ],
             'visibility' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.visibilityTitle',
@@ -94,46 +94,56 @@ class GooglePhotosAlbum extends ComponentBase
         ];
     }
 
+    public function getAlbumIdOptions()
+    {
+        return collect($this->getPicasaClient()->getAlbumsList())
+            ->pluck('albumTitle', 'albumId')
+            ->toArray();
+    }
+
     public function onRun()
     {
-        $componentSettings = new ComponentSettingsProvider($this->properties);
-        $token = $componentSettings->getOAuthToken();
-        $this->picasaClient = new PicasaClient($componentSettings, $token);
+        $this->picasaClient = $this->getPicasaClient();
+        $this->loadData();
     }
 
     public function images()
     {
-        $this->loadData();
         return $this->albumData;
     }
 
     public function albumTitle()
     {
-        $this->loadData();
         return $this->albumTitle;
     }
 
     private function loadData()
     {
-        if (!is_null($this->albumData))
-            return;
-
         $albumId = $this->property('albumId');
+
+        if (is_null($albumId))
+            abort(404);
+
         $cacheKey = 'picasaImages-' . $albumId . '_';
         $cacheDuration = (int) Settings::get('cacheDuration');
         $cacheCallback = function() use($albumId) {
             return $this->picasaClient->getAlbumImages($albumId, $this->albumTitle);
         };
 
-        if ($cacheDuration)
-        {
+        if ($cacheDuration) {
             $result = Cache::remember($cacheKey, $cacheDuration, $cacheCallback);
         }
-        else
-        {
+        else {
             $result = $cacheCallback();
         }
 
         $this->albumData = collect($result);
+    }
+
+    private function getPicasaClient()
+    {
+        $componentSettings = new ComponentSettingsProvider($this->properties);
+        $token = $componentSettings->getOAuthToken();
+        return new PicasaClient($componentSettings, $token);
     }
 }

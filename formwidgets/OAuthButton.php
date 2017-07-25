@@ -1,6 +1,7 @@
 <?php namespace Inetis\GooglePhotos\FormWidgets;
 
 use Backend\Classes\WidgetBase;
+use Exception;
 use Flash;
 use Http;
 use Inetis\GooglePhotos\PicasaWebData\OctoberCms\SettingsProvider;
@@ -26,16 +27,15 @@ class OAuthButton extends WidgetBase
     public function onLogout()
     {
         $settingsProvider = new SettingsProvider();
-        $logoutRequest = Http::get($settingsProvider->buildRevokeUrl());
-        $response = json_decode($logoutRequest->body);
-
-        if ($logoutRequest->code === 200)
+        $token = $settingsProvider->getOAuthToken();
+        try
         {
+            $token->revoke();
             Flash::success(Lang::get('inetis.googlephotos::lang.messages.revokeSuccess'));
         }
-        else
+        catch (Exception $e)
         {
-            Flash::error(Lang::get('inetis.googlephotos::lang.messages.revokeError', ['error' => $response->error_description]));
+            Flash::error(Lang::get('inetis.googlephotos::lang.messages.revokeError', ['error' => $e->getMessage()]));
         }
 
         return [

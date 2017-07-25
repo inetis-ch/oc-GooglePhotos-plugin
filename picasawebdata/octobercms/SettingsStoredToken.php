@@ -42,12 +42,27 @@ class SettingsStoredToken implements StoredTokenInterface
         return $this->token['expiration'];
     }
 
+    /**
+     * Update and save the current instance with new token data.
+     * This method is typically called when the OAuthToken is refreshed.
+     *
+     * @param array $newToken           The new data to use
+     */
     public function updateToken($newToken)
     {
         self::checkTokenFormat($newToken, false);
 
         $this->token = array_merge($this->token, $newToken);
         Settings::set('oAuth_token', $this->token);
+    }
+
+    /**
+     * Delete permanently the StoredToken.
+     * This method is typically called when the OAuthToken is revoked.
+     */
+    public function deleteToken()
+    {
+        Settings::set('oAuth_token', null);
     }
 
     private static function checkTokenFormat(&$token, $isNewToken)

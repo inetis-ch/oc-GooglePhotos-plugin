@@ -103,24 +103,21 @@ class GooglePhotosAlbums extends ComponentBase
         $componentSettings = new ComponentSettingsProvider($this->properties);
         $token = $componentSettings->getOAuthToken();
         $this->picasaClient = new PicasaClient($componentSettings, $token);
+        $this->loadData();
     }
 
     public function albums()
     {
-        $this->loadData();
         return $this->albumsData;
     }
 
     public function pagination()
     {
-        $this->loadData();
+
     }
 
     private function loadData()
     {
-        if (!is_null($this->albumsData))
-            return;
-
         $cacheKey = 'picasaAlbums';
         $cacheDuration = (int) Settings::get('cacheDuration');
         $cacheCallback = function() {
