@@ -1,7 +1,7 @@
 # Google Photos plugin for OctoberCMS
 This plugin offers a component (also available as snippet) to display a gallery from Google Photos (Picasa)
 
-<img src="https://monosnap.com/file/LkuzSbt4rpeyKv0AS3VYKdCtGRjY7i.png">
+<img src="https://user-images.githubusercontent.com/16371551/28569844-dc3f11ce-713b-11e7-8ce6-24e2cae156b2.gif">
 
 # How to use it ?
 
@@ -38,7 +38,7 @@ Here you can add as many ignored albums as you want: under "Hidden albums", clic
 Out of the box, this plugin comes with an OAuth app pre-configured. However there is no guarantee that this app won't be banned or deleted.
 If you want to use your own OAuth app, you will first to obtain a `client_id` and `client_secret` (see https://console.developers.google.com).
 
-Once you got these credentials, you can override the config of the plugin ((see official doc)[https://octobercms.com/docs/plugin/settings#file-configuration]):
+Once you got these credentials, you can override the config of the plugin ([see official doc](https://octobercms.com/docs/plugin/settings#file-configuration):
 Copy the file `/plugins/inetis/googlephotos/config/config.php` to `/config/inetis/googlephotos/config.php` and put your app credentials inside.
 
 # The OAuth library (how to use it in other projects)
