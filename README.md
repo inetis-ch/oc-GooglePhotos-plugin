@@ -113,3 +113,6 @@ $response = Http::make('api.example.com/users/me', 'GET')
 // If you want to invalidate the token, you can do it like this
 $oAuth->revoke();
 ```
+
+## Author
+inetis is a webdesign agency in Vufflens-la-Ville, Switzerland. We love coding and creating powerful apps and sites  [see our website](https://inetis.ch).
