@@ -5,9 +5,22 @@ This plugin offers a component (also available as snippet) to display a gallery 
 
 # How to use it ?
 
+## Prerequisites
+This plugin is shipped with an OAuth client app that will only work on localhost to allow you to test the plugin.
+If you want to deploy it on a remote server, you will need to create your own OAuth app credentials (or use an existing one for your domain).
+
+Follow these steps to get your credentials: [Google documentation](https://developers.google.com/identity/sign-in/web/devconsole-project).
+At a point this doc will tell you that "the Authorized redirect URI does not require a value", but in this case it needs so set it to `https://example.com/backend/inetis/googlephotos/oauth/callback`.
+Of course, replace `example.com/backend` by your domain and your backend url.
+
+When done, you will be given a `Client ID` and a `Client Secret`.
+
+With these credentials, you can override the config of the plugin ([see official doc](https://octobercms.com/docs/plugin/settings#file-configuration)):
+Copy the file `/plugins/inetis/googlephotos/config/config.php` to `/config/inetis/googlephotos/config.php` and put your app credentials inside.
+
 ## Installation
 * Install the component
-* Login to your Google account from the plugin settings
+* Login to your Google account from the plugin settings. If you get a 404 when clicking on the link, you have missed something while setting up your OAuth app
   <img src="https://monosnap.com/file/1CW6okRvNjjxBXkUQiBIcFfW0BdxCs.png">
   
 ## Setup
@@ -34,12 +47,6 @@ By default, Google Photos shows some albums related to your Google account or Go
 You can hide undesired albums from the settings of the plugin.
 Here you can add as many ignored albums as you want: under "Hidden albums", click on "Add new item" and fill the new field with either an album ID or an album name.
 
-### Custom OAuth app
-Out of the box, this plugin comes with an OAuth app pre-configured. However there is no guarantee that this app won't be banned or deleted.
-If you want to use your own OAuth app, you will first to obtain a `client_id` and `client_secret` (see https://console.developers.google.com).
-
-Once you got these credentials, you can override the config of the plugin ([see official doc](https://octobercms.com/docs/plugin/settings#file-configuration):
-Copy the file `/plugins/inetis/googlephotos/config/config.php` to `/config/inetis/googlephotos/config.php` and put your app credentials inside.
 
 # The OAuth library (how to use it in other projects)
 This plugin authenticates to Picasa Web Albums Data API with OAuth2 using a library that you can find inside the `picasawebdata/base` directory.
