@@ -45,7 +45,7 @@ class GooglePhotosAlbums extends ComponentBase
                     'visible' => 'inetis.googlephotos::lang.component.fields.optionVisible'
                 ]
             ],
-            'pageSize' => [
+            /*'pageSize' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.pageSizeTitle',
                 'description' => 'inetis.googlephotos::lang.component.fields.pageSizeDescription',
                 'default' => '0',
@@ -58,7 +58,7 @@ class GooglePhotosAlbums extends ComponentBase
                 'default' => '{{ :page }}',
                 'type' => 'string',
                 'group' => 'inetis.googlephotos::lang.component.fieldsGroups.pagination'
-            ],
+            ],*/
             'thumbSize' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.thumbSizeTitle',
                 'description' => 'inetis.googlephotos::lang.component.fields.thumbSizeDescription',
