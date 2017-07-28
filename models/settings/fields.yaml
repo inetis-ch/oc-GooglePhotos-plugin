@@ -4,8 +4,22 @@
 
 fields:
 
-    userid:
-        span: auto
-        label: userid
-        comment: userid
+    tokenButton:
+        type: Inetis\GooglePhotos\FormWidgets\OAuthButton
+        span: left
 
+    cacheDuration:
+        type: number
+        span: left
+        label: 'inetis.googlephotos::lang.settings.fields.cacheDurationLabel'
+        default: 0
+
+    hiddenAlbums:
+        type: repeater
+        label: 'inetis.googlephotos::lang.settings.fields.hiddenAlbumsLabel'
+        commentAbove: 'inetis.googlephotos::lang.settings.fields.hiddenAlbumsDescription'
+        form:
+            fields:
+                album:
+                    label: 'inetis.googlephotos::lang.settings.fields.hiddenAlbumLabel'
+                    type: text

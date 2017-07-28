@@ -16,18 +16,33 @@ class Plugin extends PluginBase
     public function pluginDetails()
     {
         return [
-            'name' => 'Insert image from Google',
-            'description' => 'No description provided yet...',
+            'name' => 'inetis.googlephotos::lang.plugin.name',
+            'description' => 'inetis.googlephotos::lang.plugin.description',
             'author' => 'inetis',
-            'icon' => 'icon-picture'
+            'icon' => 'icon-image'
         ];
     }
 
     public function registerComponents()
     {
         return [
-            'Inetis\GooglePhotos\Components\GoogleAlbums' => 'googleAlbums',
-            'Inetis\GooglePhotos\Components\GoogleAlbum' => 'googleAlbum'
+            'Inetis\GooglePhotos\Components\GooglePhotosAlbums' => 'googlePhotosAlbums',
+            'Inetis\GooglePhotos\Components\GooglePhotosAlbum' => 'googlePhotosAlbum'
+        ];
+    }
+
+    public function registerPageSnippets()
+    {
+        return $this->registerComponents();
+    }
+
+    public function registerFormWidgets()
+    {
+        return [
+            'Inetis\GooglePhotos\FormWidgets\OAuthButton' => [
+                'label' => 'Location Selector',
+                'code'  => 'googlePhotosOAuthButton'
+            ],
         ];
     }
 
@@ -35,13 +50,10 @@ class Plugin extends PluginBase
     {
         return [
             'settings' => [
-                'label' => 'Google user id',
-                'description' => 'Picasa Id of the user',
-                'category' => 'Picasa',
-                'default' => -1,
-                'icon' => 'icon-cog',
+                'label' => 'inetis.googlephotos::lang.settings.menuEntry.label',
+                'description' => 'inetis.googlephotos::lang.settings.menuEntry.description',
+                'icon' => 'icon-image',
                 'class' => 'Inetis\GooglePhotos\Models\Settings',
-                'order' => 500
             ]
         ];
     }

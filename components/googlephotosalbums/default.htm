@@ -1,0 +1,12 @@
+<h3>All galleries</h3>
+
+<div class="row">
+{% for item in __SELF__.albums %}
+    <a class="col-lg-2 col-md-4 col-xs-6 thumb" href="{{ __SELF__.properties.albumPage | page({ albumId: item.albumId }) }}">
+        <div>
+            <img class="img-responsive" src="{{ item.thumbUrl }}" alt="" />
+            {{ item.albumTitle }}
+        </div>
+    </a>
+{% endfor %}
+</div>
