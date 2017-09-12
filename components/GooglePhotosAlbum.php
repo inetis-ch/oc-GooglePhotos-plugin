@@ -97,7 +97,9 @@ class GooglePhotosAlbum extends ComponentBase
     public function getAlbumIdOptions()
     {
         return collect($this->getPicasaClient()->getAlbumsList())
-            ->pluck('albumTitle', 'albumId')
+            ->mapWithKeys(function($item) {
+                return ['id:' . $item['albumId'] => $item['albumTitle']];
+            })
             ->toArray();
     }
 
@@ -123,6 +125,11 @@ class GooglePhotosAlbum extends ComponentBase
 
         if (is_null($albumId))
             abort(404);
+
+        // The albumId may be passed as a string in format id:91827364546372819
+        if (is_string($albumId) && ($separator = strpos($albumId, ':')) !== false) {
+            $albumId = substr($albumId, $separator + 1);
+        }
 
         $cacheKey = 'picasaImages-' . $albumId . '_';
         $cacheDuration = (int) Settings::get('cacheDuration');

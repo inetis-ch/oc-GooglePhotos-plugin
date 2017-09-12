@@ -99,7 +99,7 @@ class PicasaClient
     /**
      * Get the images of an album by id
      *
-     * @param integer $albumId          A picasa album id
+     * @param string $albumId           A picasa album id
      * @param string $albumTitle        A reference that will be assigned as the title of the album fetched
      *
      * @return array
