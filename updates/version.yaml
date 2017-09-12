@@ -2,3 +2,5 @@
 1.1.0:
     - !!! Rename plugin into GooglePhotos
     - !!! Add OAuth2 authentication
+1.1.1:
+    - Fix single album snippet generating an error on 32bits php
