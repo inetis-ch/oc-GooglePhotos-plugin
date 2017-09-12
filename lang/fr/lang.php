@@ -15,6 +15,8 @@ return [
             'oAuthLabel' => 'Authentification GooglePhotos',
             'oAuthSignIn' => 'Connexion',
             'oAuthSignOut' => 'Déconnexion',
+            'oAuthAppWarning' => 'Une configuration supplémentaire est requise',
+            'oAuthAppWarningMessage' => 'Veuillez configurer une application OAuth afin de pouvoir utiliser ce plugin sur un domaine autre que localhost (<a href="https://octobercms.com/plugin/inetis-googlephotos" target="_blank">voir section "Prerequisites" du guide d\'installation</a>). Cliquer sur le bouton de connexion maintenant retournera probablement une erreur.',
             'signOutConfirm' => 'Êtes-vous sûr de vouloir révoquer l\'accès de ce plugin à Google Photos?',
             'cacheDurationLabel' => 'Durée du cache (minutes)',
             'hiddenAlbumsLabel' => 'Albums masqués',

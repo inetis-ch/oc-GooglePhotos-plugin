@@ -4,9 +4,24 @@ use Inetis\GooglePhotos\PicasaWebData\OctoberCms\SettingsProvider;
 
 $settingsProvider = new SettingsProvider();
 $isAuthenticated  = $settingsProvider->hasValidToken();
+$hasBuiltInApp    = md5($settingsProvider->getClientId()) === 'a57261ae1da8714c30f24223741d4369';
+$isOnLocalhost    = preg_match('#https?://localhost.*#', Request::root()) === 1;
 
 ?>
 <div id="googlePhotosOAuthButton">
+
+    <?php if (!$isAuthenticated && $hasBuiltInApp && !$isOnLocalhost): ?>
+        <div class="padded-container">
+            <div class="callout callout-warning">
+                <div class="header">
+                    <i class="icon-warning"></i>
+                    <h3><?= Lang::get('inetis.googlephotos::lang.settings.fields.oAuthAppWarning') ?></h3>
+                    <p><?= Lang::get('inetis.googlephotos::lang.settings.fields.oAuthAppWarningMessage') ?></p>
+                </div>
+            </div>
+        </div>
+    <?php endif; ?>
+
     <label><?= Lang::get('inetis.googlephotos::lang.settings.fields.oAuthLabel') ?></label>
 
     <div>
