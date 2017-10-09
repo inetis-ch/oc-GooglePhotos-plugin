@@ -6,3 +6,5 @@
     - Fix single album snippet generating an error on 32bits php
 1.2.0:
     - Add support for videos
+1.2.1:
+    - Fix an error on albums list when caching is enabled
