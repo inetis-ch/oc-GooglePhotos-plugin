@@ -33,7 +33,7 @@ class Album extends AbstractMedia
 		$instance->albumTitle = (string) $entry->title;
 		$instance->photoUrl = (string) $photoAttr['url'];
 		$instance->thumbUrl = (string) $thumbnailAttr['url'];
-		$instance->albumId = $album->id;
+		$instance->albumId = (string) $album->id;
 		$instance->albumNumPhotos = (string) $album->numphotos;
 
 		$instance->thumbUrl = self::resizeImage(
