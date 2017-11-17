@@ -98,7 +98,7 @@ class GooglePhotosAlbum extends ComponentBase
     {
         return collect($this->getPicasaClient()->getAlbumsList())
             ->mapWithKeys(function($item) {
-                return ['id:' . $item['albumId'] => $item['albumTitle']];
+                return ['id:' . $item->albumId => $item->albumTitle];
             })
             ->toArray();
     }
