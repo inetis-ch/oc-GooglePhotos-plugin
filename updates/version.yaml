@@ -8,3 +8,5 @@
     - Add support for videos
 1.2.1:
     - Fix an error on albums list when caching is enabled
+1.2.2:
+    - Fix an error on the single album snippet
