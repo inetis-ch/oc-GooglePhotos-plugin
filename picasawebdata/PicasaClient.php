@@ -35,7 +35,7 @@ class PicasaClient
     /**
      * Get the list of all albums on an account
      *
-     * @return array
+     * @return Elements\Album[]
      * @throws Exception
      */
     public function getAlbumsList()
@@ -78,7 +78,7 @@ class PicasaClient
      * @param string $albumId           A picasa album id
      * @param string $albumTitle        A reference that will be assigned as the title of the album fetched
      *
-     * @return array
+     * @return Elements\Photo[]
      * @throws Exception
      */
     public function getAlbumImages($albumId, &$albumTitle = "")
