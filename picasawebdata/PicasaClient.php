@@ -46,7 +46,8 @@ class PicasaClient
         $http->data([
             'kind' => 'album',
             'access' => $this->settings->getVisibility(),
-            'thumbsize' => $this->settings->getAlbumThumbSize()
+            'thumbsize' => $this->settings->getAlbumThumbSize(),
+            'deprecation-extension' => 'true'
         ]);
         $this->addPagination($http);
         $http->header([
@@ -89,7 +90,8 @@ class PicasaClient
         $http->data([
             'thumbsize' => $this->settings->getAlbumThumbSize(),
             'access' => $this->settings->getVisibility(),
-            'imgmax' => 'd' // Retrieve original image (full size)
+            'imgmax' => 'd',    // Retrieve original image (full size)
+            'deprecation-extension' => 'true'
         ]);
         $this->addPagination($http);
         $http->header([
