@@ -11,6 +11,8 @@ The documentation will say that "the Authorized redirect URI does not require a 
 
 When done, you will be given a `Client ID` and a `Client Secret`, which you will need to provide to the plugin by overriding the configuration file. [See the official documentation](https://octobercms.com/docs/plugin/settings#file-configuration) on doing this. Basically, just copy the file `/plugins/inetis/googlephotos/config/config.php` to `/config/inetis/googlephotos/config.php` and put your app credentials inside.
 
+Finally, you need to enable enable the [Photos Library API](https://console.cloud.google.com/apis/library/photoslibrary.googleapis.com) for your project.
+
 ## Installation
 * Add the component to a CMS page
 * Login to your Google account from the plugin settings. If you get a 404 when clicking on the link, you have missed something while setting up your OAuth app

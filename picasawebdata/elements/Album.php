@@ -8,56 +8,55 @@ use Inetis\GooglePhotos\PicasaWebData\Base\Settings\PicasaSettingsProviderInterf
  */
 class Album extends AbstractMedia
 {
-	public $albumTitle;
-	public $photoUrl;
-	public $thumbUrl;
-	public $albumId;
-	public $albumNumPhotos;
+    public $id;
+    public $title;
+    public $photoUrl;
+    public $thumbUrl;
+    public $photosCount;
 
-	private $settings;
+    protected $legacyProperties = [
+        'albumId' => 'id',
+        'albumTitle' => 'title',
+        'albumNumPhotos' => 'photosCount',
+    ];
 
-	/**
-	 * @inheritDoc AbstractMedia
-	 */
-	public static function makeFromXml(SimpleXMLElement $entry, PicasaSettingsProviderInterface $settings)
-	{
-		$instance = new static();
-		$instance->settings = $settings;
+    /** @var PicasaSettingsProviderInterface */
+    private $settings;
 
-		$namespaces = $entry->getNameSpaces(true);
-		$album = $entry->children($namespaces['gphoto']);
-		$media = $entry->children($namespaces['media']);
-		$thumbnailAttr = $media->group->thumbnail->attributes();
-		$photoAttr = $media->group->content->attributes();
+    /**
+     * @inheritDoc AbstractMedia
+     */
+    public static function makeFromGooglePhotos(\stdClass $entry, PicasaSettingsProviderInterface $settings)
+    {
+        $instance = new static();
+        $instance->settings = $settings;
 
-		$instance->albumTitle = (string) $entry->title;
-		$instance->photoUrl = (string) $photoAttr['url'];
-		$instance->thumbUrl = (string) $thumbnailAttr['url'];
-		$instance->albumId = (string) $album->id;
-		$instance->albumNumPhotos = (string) $album->numphotos;
+        $instance->id          = $entry->id;
+        $instance->title       = $entry->title;
+        $instance->photosCount = $entry->mediaItemsCount;
 
-		$instance->thumbUrl = self::resizeImage(
-			$instance->thumbUrl,
-			$settings->getAlbumThumbSize(),
-			$settings->getImagesCropMode(),
-			$settings->getImagesShouldCrop()
-		);
+        $instance->thumbUrl = $instance->photoUrl = self::getImageUrl(
+            $entry->coverPhotoBaseUrl,
+            $settings->getImagesWidth(),
+            $settings->getImagesHeight(),
+            $settings->getImagesShouldCrop()
+        );
 
-		return $instance;
-	}
+        return $instance;
+    }
 
-	/**
-	 * Check if the album belongs to the list of excluded albums.
-	 *
-	 * @return boolean
-	 */
-	public function isExcluded()
-	{
-		$albumsToIgnore = $this->settings->getHiddenAlbums();
+    /**
+     * Check if the album belongs to the list of excluded albums.
+     *
+     * @return boolean
+     */
+    public function isExcluded()
+    {
+        $albumsToIgnore = $this->settings->getHiddenAlbums();
 
-		return (
-			in_array($this->albumId, $albumsToIgnore) ||
-			in_array($this->albumTitle, $albumsToIgnore)
-		);
-	}
+        return (
+            in_array($this->id, $albumsToIgnore) ||
+            in_array($this->title, $albumsToIgnore)
+        );
+    }
 }

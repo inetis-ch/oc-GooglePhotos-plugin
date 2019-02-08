@@ -2,20 +2,23 @@
 
 use Cache;
 use Cms\Classes\ComponentBase;
+use Illuminate\Support\Collection;
 use Inetis\GooglePhotos\Models\Settings;
+use Inetis\GooglePhotos\PicasaWebData\Elements\AbstractMedia;
+use Inetis\GooglePhotos\PicasaWebData\Elements\Album;
 use Inetis\GooglePhotos\PicasaWebData\OctoberCms\ComponentSettingsProvider;
-use Inetis\GooglePhotos\PicasaWebData\PicasaClient;
+use Inetis\GooglePhotos\PicasaWebData\GooglePhotosClient;
 
 class GooglePhotosAlbum extends ComponentBase
 {
-    /**
-     * @var PicasaClient
-     */
-    private $picasaClient;
+    /** @var GooglePhotosClient */
+    private $apiClient;
 
+    /** @var Album */
     private $albumData = null;
 
-    private $albumTitle;
+    /** @var AbstractMedia[] */
+    private $albumImages = [];
 
     public function componentDetails()
     {
@@ -34,18 +37,6 @@ class GooglePhotosAlbum extends ComponentBase
                 'default' => '{{ :albumId }}',
                 'type' => 'dropdown'
             ],
-            'visibility' => [
-                'title' => 'inetis.googlephotos::lang.component.fields.visibilityTitle',
-                'description' => 'inetis.googlephotos::lang.component.fields.visibilityDescription',
-                'default' => 'all',
-                'type' => 'dropdown',
-                'options' => [
-                    'all' => 'inetis.googlephotos::lang.component.fields.optionAll',
-                    'public' => 'inetis.googlephotos::lang.component.fields.optionPublic',
-                    'private' => 'inetis.googlephotos::lang.component.fields.optionPrivate',
-                    'visible' => 'inetis.googlephotos::lang.component.fields.optionVisible'
-                ]
-            ],
             /*'pageSize' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.pageSizeTitle',
                 'description' => 'inetis.googlephotos::lang.component.fields.pageSizeDescription',
@@ -60,30 +51,24 @@ class GooglePhotosAlbum extends ComponentBase
                 'type' => 'string',
                 'group' => 'inetis.googlephotos::lang.component.fieldsGroups.pagination'
             ],*/
-            'thumbSize' => [
-                'title' => 'inetis.googlephotos::lang.component.fields.thumbSizeTitle',
-                'description' => 'inetis.googlephotos::lang.component.fields.thumbSizeDescription',
+            'thumbHeight' => [
+                'title' => 'inetis.googlephotos::lang.component.fields.thumbHeightTitle',
+                'description' => 'inetis.googlephotos::lang.component.fields.thumbHeightDescription',
                 'default' => '160',
                 'type' => 'string',
                 'group' => 'inetis.googlephotos::lang.component.fieldsGroups.thumbnails'
             ],
-            'cropMode' => [
-                'title' => 'inetis.googlephotos::lang.component.fields.cropModeTitle',
-                'description' => 'inetis.googlephotos::lang.component.fields.cropModeDescription',
-                'default' => 's',
-                'type' => 'dropdown',
-                'options' => [
-                    'h' => 'inetis.googlephotos::lang.component.fields.optionHeight',
-                    'w' => 'inetis.googlephotos::lang.component.fields.optionWidth',
-                    's' => 'inetis.googlephotos::lang.component.fields.optionSmallest',
-                    'l' => 'inetis.googlephotos::lang.component.fields.optionLargest'
-                ],
+            'thumbWidth' => [
+                'title' => 'inetis.googlephotos::lang.component.fields.thumbWidthTitle',
+                'description' => 'inetis.googlephotos::lang.component.fields.thumbWidthDescription',
+                'default' => '160',
+                'type' => 'string',
                 'group' => 'inetis.googlephotos::lang.component.fieldsGroups.thumbnails'
             ],
             'shouldCrop' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.shouldCropTitle',
                 'description' => 'inetis.googlephotos::lang.component.fields.shouldCropDescription',
-                'default' => 1,
+                'default' => 0,
                 'type' => 'dropdown',
                 'options' => [
                     0 => 'inetis.googlephotos::lang.component.fields.optionNo',
@@ -96,7 +81,7 @@ class GooglePhotosAlbum extends ComponentBase
 
     public function getAlbumIdOptions()
     {
-        return collect($this->getPicasaClient()->getAlbumsList())
+        return collect($this->getClient()->getAlbumsList())
             ->mapWithKeys(function($item) {
                 return ['id:' . $item->albumId => $item->albumTitle];
             })
@@ -105,18 +90,23 @@ class GooglePhotosAlbum extends ComponentBase
 
     public function onRun()
     {
-        $this->picasaClient = $this->getPicasaClient();
+        $this->apiClient = $this->getClient();
         $this->loadData();
     }
 
-    public function images()
+    public function album()
     {
         return $this->albumData;
     }
 
+    public function images()
+    {
+        return $this->albumImages;
+    }
+
     public function albumTitle()
     {
-        return $this->albumTitle;
+        return $this->albumData->title;
     }
 
     private function loadData()
@@ -131,10 +121,16 @@ class GooglePhotosAlbum extends ComponentBase
             $albumId = substr($albumId, $separator + 1);
         }
 
+        $this->albumData = $this->getAlbumData($albumId);
+        $this->albumImages = $this->getAlbumImages($albumId);
+    }
+
+    private function getAlbumImages(string $albumId) : Collection
+    {
         $cacheKey = 'picasaImages-' . $albumId . '_';
         $cacheDuration = (int) Settings::get('cacheDuration');
         $cacheCallback = function() use($albumId) {
-            return $this->picasaClient->getAlbumImages($albumId, $this->albumTitle);
+            return $this->apiClient->getAlbumImages($albumId);
         };
 
         if ($cacheDuration) {
@@ -144,13 +140,28 @@ class GooglePhotosAlbum extends ComponentBase
             $result = $cacheCallback();
         }
 
-        $this->albumData = collect($result);
+        return collect($result);
     }
 
-    private function getPicasaClient()
+    private function getAlbumData(string $albumId) : Album
+    {
+        $cacheKey = 'picasaAlbum-' . $albumId . '_';
+        $cacheDuration = (int) Settings::get('cacheDuration');
+        $cacheCallback = function() use($albumId) {
+            return $this->apiClient->getAlbum($albumId);
+        };
+
+        if ($cacheDuration) {
+            return Cache::remember($cacheKey, $cacheDuration, $cacheCallback);
+        }
+
+        return $cacheCallback();
+    }
+
+    private function getClient()
     {
         $componentSettings = new ComponentSettingsProvider($this->properties);
         $token = $componentSettings->getOAuthToken();
-        return new PicasaClient($componentSettings, $token);
+        return new GooglePhotosClient($componentSettings, $token);
     }
 }
