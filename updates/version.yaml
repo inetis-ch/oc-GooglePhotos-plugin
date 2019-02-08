@@ -12,3 +12,5 @@
     - Fix an error on the single album snippet
 1.2.3:
     - Use deprecation extension for the api
+1.3.0:
+    - !!! Update to Google Photos API. Read the upgrade guide on the market

@@ -4,8 +4,9 @@
 Version 1.3.0 is now using the GooglePhotos api instead of the PicasaWebData api.
 
 There are a few changes that you should care about:
-- It is no more possible to filter by albums visibility.
-- Album ids have changed. If you are using the `googlePhotosAlbum` component with a custom album, you need to select it again after updating.
+- You need to add the [Photos Library API](https://console.cloud.google.com/apis/library/photoslibrary.googleapis.com) to your Google Cloud Platform project
+- It is no more possible to filter by albums visibility
+- Album ids have changed. If you are using the `googlePhotosAlbum` component with a custom album, you need to select it again after updating
 - If you have set some excluded albums by id, you should also change them
 - The size definition for the thumbnails has changed. After updating the plugin, you will need to go trough everywhere you use the components to update the sizes.
 - The photos urls returned by the API are now valid for 60 minutes only. Check that the cache duration in the plugin settings is no longer that 60 minutes.
