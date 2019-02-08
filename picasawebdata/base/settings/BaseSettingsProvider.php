@@ -1,7 +1,6 @@
 <?php namespace Inetis\GooglePhotos\PicasaWebData\Base\Settings;
 
 use Exception;
-use Http;
 use Inetis\GooglePhotos\PicasaWebData\Base\Tokens\OAuthToken;
 use Inetis\GooglePhotos\PicasaWebData\Base\Tokens\StoredTokenInterface;
 
@@ -16,7 +15,7 @@ abstract class BaseSettingsProvider
     protected $tokenExchangeUrl = "https://www.googleapis.com/oauth2/v4/token";
     protected $tokenRevokeUrl = "https://accounts.google.com/o/oauth2/revoke";
     protected $tokenScopes = [
-        "https://picasaweb.google.com/data"
+        "https://www.googleapis.com/auth/photoslibrary.readonly"
     ];
     protected $tokenRedirectUrl = "";
 

@@ -1,5 +1,6 @@
 <?php namespace Inetis\GooglePhotos\PicasaWebData\Elements;
 
+use Carbon\Carbon;
 use SimpleXMLElement;
 use Inetis\GooglePhotos\PicasaWebData\Base\Settings\PicasaSettingsProviderInterface;
 
@@ -8,44 +9,53 @@ use Inetis\GooglePhotos\PicasaWebData\Base\Settings\PicasaSettingsProviderInterf
  */
 class Photo extends AbstractMedia
 {
-	public $photoTitle;
-	public $photoUrl;
-	public $thumbUrl;
-	public $photoSummary;
-	public $photoPublished;
-	public $photoUpdated;
-	public $imageHeight;
-	public $imageWidth;
+    public $filename;
+    public $description;
+    public $url;
+    public $thumbUrl;
+    public $mimeType;
+    public $creationTime;
+    public $width;
+    public $height;
 
-	/**
-	 * @inheritDoc AbstractMedia
-	 */
-	public static function makeFromXml(SimpleXMLElement $entry, PicasaSettingsProviderInterface $settings)
-	{
-		$instance = new static();
+    protected $legacyProperties = [
+        'photoTitle' => 'filename',
+        'photoSummary' => 'description',
+        'photoPublished' => 'creationTime',
+        'photoUpdated' => 'creationTime',
+        'imageHeight' => 'height',
+        'imageWidth' => 'width',
+        'photoUrl' => 'url',
+    ];
 
-		$namespaces = $entry->getNameSpaces(true);
-		$gPhoto = $entry->children($namespaces['gphoto']);
-		$media = $entry->children($namespaces['media']);
-		$thumbnailAttr = $media->group->thumbnail->attributes();
-		$photoAttr = $media->group->content->attributes();
+    /**
+     * @inheritDoc AbstractMedia
+     */
+    public static function makeFromGooglePhotos(\stdClass $entry, PicasaSettingsProviderInterface $settings)
+    {
+        $instance = new static();
 
-		$instance->photoTitle = (string) $entry->title[0];
-		$instance->photoUrl = (string) $photoAttr['url'];
-		$instance->thumbUrl = (string) $thumbnailAttr['url'];
-		$instance->photoSummary = (string) $entry->summary[0];
-		$instance->photoPublished = (string) $entry->published;
-		$instance->photoUpdated = (string) $entry->updated;
-		$instance->imageHeight = (int) $gPhoto->height;
-		$instance->imageWidth = (int) $gPhoto->width;
+        $instance->filename = data_get($entry, 'filename');
+        $instance->description = data_get($entry, 'description');
+        $instance->mimeType = data_get($entry, 'mimeType');
+        $instance->width = data_get($entry, 'mediaMetadata.width');
+        $instance->height = data_get($entry, 'mediaMetadata.height');
+        $instance->creationTime = new Carbon(data_get($entry, 'mediaMetadata.creationTime'));
 
-		$instance->thumbUrl = self::resizeImage(
-			$instance->thumbUrl,
-			$settings->getAlbumThumbSize(),
-			$settings->getImagesCropMode(),
-			$settings->getImagesShouldCrop()
-		);
+        $instance->url = self::getImageUrl(
+            $entry->baseUrl,
+            $instance->width,
+            $instance->height,
+            false
+        );
 
-		return $instance;
-	}
+        $instance->thumbUrl = self::getImageUrl(
+            $entry->baseUrl,
+            $settings->getImagesWidth(),
+            $settings->getImagesHeight(),
+            $settings->getImagesShouldCrop()
+        );
+
+        return $instance;
+    }
 }

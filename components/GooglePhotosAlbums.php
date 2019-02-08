@@ -3,17 +3,16 @@
 use Cache;
 use Cms\Classes\ComponentBase;
 use Cms\Classes\Page;
-use Illuminate\Pagination\LengthAwarePaginator;
 use Inetis\GooglePhotos\Models\Settings;
+use Inetis\GooglePhotos\PicasaWebData\GooglePhotosClient;
 use Inetis\GooglePhotos\PicasaWebData\OctoberCms\ComponentSettingsProvider;
-use Inetis\GooglePhotos\PicasaWebData\PicasaClient;
 
 class GooglePhotosAlbums extends ComponentBase
 {
     /**
-     * @var PicasaClient
+     * @var GooglePhotosClient
      */
-    private $picasaClient;
+    private $apiClient;
 
     private $albumsData = null;
 
@@ -33,18 +32,6 @@ class GooglePhotosAlbums extends ComponentBase
                 'description' => 'inetis.googlephotos::lang.component.fields.albumPageDescription',
                 'type' => 'dropdown',
             ],
-            'visibility' => [
-                'title' => 'inetis.googlephotos::lang.component.fields.visibilityTitle',
-                'description' => 'inetis.googlephotos::lang.component.fields.visibilityDescription',
-                'default' => 'all',
-                'type' => 'dropdown',
-                'options' => [
-                    'all' => 'inetis.googlephotos::lang.component.fields.optionAll',
-                    'public' => 'inetis.googlephotos::lang.component.fields.optionPublic',
-                    'private' => 'inetis.googlephotos::lang.component.fields.optionPrivate',
-                    'visible' => 'inetis.googlephotos::lang.component.fields.optionVisible'
-                ]
-            ],
             /*'pageSize' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.pageSizeTitle',
                 'description' => 'inetis.googlephotos::lang.component.fields.pageSizeDescription',
@@ -59,30 +46,24 @@ class GooglePhotosAlbums extends ComponentBase
                 'type' => 'string',
                 'group' => 'inetis.googlephotos::lang.component.fieldsGroups.pagination'
             ],*/
-            'thumbSize' => [
-                'title' => 'inetis.googlephotos::lang.component.fields.thumbSizeTitle',
-                'description' => 'inetis.googlephotos::lang.component.fields.thumbSizeDescription',
+            'thumbHeight' => [
+                'title' => 'inetis.googlephotos::lang.component.fields.thumbHeightTitle',
+                'description' => 'inetis.googlephotos::lang.component.fields.thumbHeightDescription',
                 'default' => '160',
                 'type' => 'string',
                 'group' => 'inetis.googlephotos::lang.component.fieldsGroups.thumbnails'
             ],
-            'cropMode' => [
-                'title' => 'inetis.googlephotos::lang.component.fields.cropModeTitle',
-                'description' => 'inetis.googlephotos::lang.component.fields.cropModeDescription',
-                'default' => 's',
-                'type' => 'dropdown',
-                'options' => [
-                    'h' => 'inetis.googlephotos::lang.component.fields.optionHeight',
-                    'w' => 'inetis.googlephotos::lang.component.fields.optionWidth',
-                    's' => 'inetis.googlephotos::lang.component.fields.optionSmallest',
-                    'l' => 'inetis.googlephotos::lang.component.fields.optionLargest'
-                ],
+            'thumbWidth' => [
+                'title' => 'inetis.googlephotos::lang.component.fields.thumbWidthTitle',
+                'description' => 'inetis.googlephotos::lang.component.fields.thumbWidthDescription',
+                'default' => '160',
+                'type' => 'string',
                 'group' => 'inetis.googlephotos::lang.component.fieldsGroups.thumbnails'
             ],
             'shouldCrop' => [
                 'title' => 'inetis.googlephotos::lang.component.fields.shouldCropTitle',
                 'description' => 'inetis.googlephotos::lang.component.fields.shouldCropDescription',
-                'default' => 1,
+                'default' => 0,
                 'type' => 'dropdown',
                 'options' => [
                     0 => 'inetis.googlephotos::lang.component.fields.optionNo',
@@ -102,7 +83,7 @@ class GooglePhotosAlbums extends ComponentBase
     {
         $componentSettings = new ComponentSettingsProvider($this->properties);
         $token = $componentSettings->getOAuthToken();
-        $this->picasaClient = new PicasaClient($componentSettings, $token);
+        $this->apiClient = new GooglePhotosClient($componentSettings, $token);
         $this->loadData();
     }
 
@@ -121,7 +102,7 @@ class GooglePhotosAlbums extends ComponentBase
         $cacheKey = 'picasaAlbums';
         $cacheDuration = (int) Settings::get('cacheDuration');
         $cacheCallback = function() {
-            return $this->picasaClient->getAlbumsList();
+            return $this->apiClient->getAlbumsList();
         };
 
         if ($cacheDuration)
