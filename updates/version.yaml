@@ -1,7 +1,7 @@
 1.0.1: First version of googleimages
 1.1.0:
-    - !!! Rename plugin to GooglePhotos
-    - !!! Add OAuth2 authentication
+    - Rename plugin to GooglePhotos
+    - Add OAuth2 authentication
 1.1.1:
     - Fix single album snippet generating an error on 32bits php
 1.2.0:
@@ -13,4 +13,7 @@
 1.2.3:
     - Use deprecation extension for the api
 1.3.0:
-    - !!! Update to Google Photos API. Read the upgrade guide on the market
+    - Update to Google Photos API. Read the upgrade guide on the market
+1.4.0:
+    - Add October v3 compatibility
+    - fix 'crop' option
