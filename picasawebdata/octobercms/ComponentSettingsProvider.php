@@ -26,7 +26,7 @@ class ComponentSettingsProvider extends SettingsProvider implements PicasaSettin
 
     public function getImagesShouldCrop()
     {
-        return (bool) $this->properties->get('shoupdCrop', false);
+        return (bool) $this->properties->get('shouldCrop', false);
     }
 
     public function getMaxResults()
