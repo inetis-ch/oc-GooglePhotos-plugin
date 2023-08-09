@@ -16,3 +16,4 @@
     - Update to Google Photos API. Read the upgrade guide on the market
 1.4.0:
     - Add October v3 compatibility
+    - fix 'crop' option
