@@ -1,0 +1,9 @@
+{
+    "name": "inetis/googlephotos-plugin",
+    "description": "Display a list of Google Photos albums, or the photos in one album",
+    "type": "october-plugin",
+    "licence": "MIT",
+    "require": {
+        "composer/installers": "~1.0"
+    }
+}

@@ -1,13 +1,13 @@
 <?php namespace Inetis\GooglePhotos\FormWidgets;
 
-use Backend\Classes\WidgetBase;
+use Backend\Classes\FormWidgetBase;
 use Exception;
 use Flash;
 use Http;
 use Inetis\GooglePhotos\PicasaWebData\OctoberCms\SettingsProvider;
 use Lang;
 
-class OAuthButton extends WidgetBase
+class OAuthButton extends FormWidgetBase
 {
     /**
      * @var string A unique alias to identify this widget.
@@ -19,7 +19,7 @@ class OAuthButton extends WidgetBase
         return $this->makePartial('oauthbutton');
     }
 
-    public function getSaveValue()
+    public function getSaveValue($value)
     {
         return null;
     }
