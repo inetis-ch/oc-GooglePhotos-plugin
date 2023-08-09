@@ -1,11 +1,11 @@
 <?php namespace Inetis\GooglePhotos\PicasaWebData\OctoberCms;
 
+use Backend;
 use Config;
 use Exception;
 use Inetis\GooglePhotos\PicasaWebData\Base\Settings\BaseSettingsProvider;
 use Inetis\GooglePhotos\PicasaWebData\Base\Tokens\OAuthToken;
 use Inetis\GooglePhotos\PicasaWebData\Base\Tokens\StoredTokenInterface;
-use Request;
 
 class SettingsProvider extends BaseSettingsProvider
 {
@@ -14,9 +14,7 @@ class SettingsProvider extends BaseSettingsProvider
      */
     public function __construct()
     {
-        $this->tokenRedirectUrl = Request::root() . Config::get('cms.backendUri');
-        $this->tokenRedirectUrl .= '/inetis/googlephotos/oauth/callback';
-
+        $this->tokenRedirectUrl = Backend::url('inetis/googlephotos/oauth/callback');
         $this->clientId = Config::get('inetis.googlephotos::clientId');
         $this->clientSecret = Config::get('inetis.googlephotos::clientSecret');
         $this->httpReferrer = Config::get('inetis.googlephotos::httpReferrer');
