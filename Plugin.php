@@ -54,7 +54,18 @@ class Plugin extends PluginBase
                 'description' => 'inetis.googlephotos::lang.settings.menuEntry.description',
                 'icon' => 'icon-image',
                 'class' => 'Inetis\GooglePhotos\Models\Settings',
+                'permissions' => ['inetis.googlephotos.access_settings'],
             ]
+        ];
+    }
+
+    public function registerPermissions()
+    {
+        return [
+            'inetis.googlephotos.access_settings' => [
+                'tab' => 'inetis.googlephotos::lang.permissions.tab',
+                'label' => 'inetis.googlephotos::lang.permissions.access_settings'
+            ],
         ];
     }
 

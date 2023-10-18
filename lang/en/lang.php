@@ -6,6 +6,11 @@ return [
         'description' => 'This plugin allows to display albums from your Google Photos (Picasa) account'
     ],
 
+    'permissions' => [
+        'access_settings' => 'Access Google Photos plugin settings',
+        'tab' => 'Google Photos',
+    ],
+
     'settings' => [
         'menuEntry' => [
             'label' => 'Google Photos',

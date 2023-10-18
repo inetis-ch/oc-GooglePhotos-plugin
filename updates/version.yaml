@@ -17,3 +17,5 @@
 1.4.0:
     - Add October v3 compatibility
     - fix 'crop' option
+1.5.0:
+    - Add 'inetis.googlephotos.access_settings' permission

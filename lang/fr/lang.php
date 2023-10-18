@@ -6,6 +6,11 @@ return [
         'description' => 'Ce plugin permet d\'afficher des albums à partir de votre compte Google Photos (Picasa)'
     ],
 
+    'permissions' => [
+        'access_settings' => 'Accéder aux paramètres du plugin Google Photos',
+        'tab' => 'Google Photos',
+    ],
+
     'settings' => [
         'menuEntry' => [
             'label' => 'Google Photos',
