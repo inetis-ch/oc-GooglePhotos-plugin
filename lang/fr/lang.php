@@ -38,7 +38,8 @@ return [
 
         'album' => [
             'name' => 'Album Google Photos',
-            'description' => 'Affiche un album du compte Google Photos'
+            'description' => 'Affiche un album du compte Google Photos',
+            'albumEmpty' => 'Cet album est vide',
         ],
 
         'fields' => [

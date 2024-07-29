@@ -19,3 +19,5 @@
     - fix 'crop' option
 1.5.0:
     - Add 'inetis.googlephotos.access_settings' permission
+1.5.1:
+    - Fix errors when an empty album exists on the account

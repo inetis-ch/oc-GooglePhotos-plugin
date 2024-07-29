@@ -33,7 +33,7 @@ class Album extends AbstractMedia
 
         $instance->id          = $entry->id;
         $instance->title       = $entry->title;
-        $instance->photosCount = $entry->mediaItemsCount;
+        $instance->photosCount = $entry->mediaItemsCount ?? 0;
 
         $instance->thumbUrl = $instance->photoUrl = self::getImageUrl(
             $entry->coverPhotoBaseUrl,

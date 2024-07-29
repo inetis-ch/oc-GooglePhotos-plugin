@@ -8,6 +8,10 @@
             {{ item.filename }}
         </div>
     </a>
+{% else %}
+    <div class="col-xs-12">
+        <p>{{ 'inetis.googlephotos::lang.component.album.albumEmpty' | trans }}</p>
+    </div>
 {% endfor %}
 </div>
 

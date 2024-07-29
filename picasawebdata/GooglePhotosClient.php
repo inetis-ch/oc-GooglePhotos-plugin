@@ -158,7 +158,7 @@ class GooglePhotosClient
 
             $pageResults = json_decode($httpClone->body);
             $nextPageToken = $pageResults->nextPageToken ?? null;
-            $results = array_merge($results, $pageResults->$groupKey);
+            $results = array_merge($results, $pageResults->$groupKey ?? []);
         }
         while (!empty($nextPageToken));
 
