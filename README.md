@@ -1,3 +1,10 @@
+# Plugin deprecation
+
+
+> [!WARNING]  
+> [Updates in the google photos API](https://developers.google.com/photos/support/updates) taking effect march 2025 will break the basic functionality of this plugin.  
+>We will no longer be supporting it and recommend finding an alternative.  
+
 # About
 OctoberCMS plugin for displaying a gallery from Google Photos (Picasa) through the use of a CMS component or a RainLab.Pages snippet.
 
